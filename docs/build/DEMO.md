@@ -48,7 +48,7 @@
 > **Voiceover**:
 > "One MCP server with [N] tools. Two collaborating A2A agents — a Coordinator and a Patient Educator. SHARP context propagates the patient ID and FHIR token across every hop, so identity is never under LLM control."
 
-**Visual**: the architecture diagram from [ARCHITECTURE.md](ARCHITECTURE.md), animated to show data flow. Highlight SHARP context as it crosses each boundary.
+**Visual**: the architecture diagram from [ARCHITECTURE.md](../design/ARCHITECTURE.md), animated to show data flow. Highlight SHARP context as it crosses each boundary.
 
 ### 0:45–2:00 — Live demo (the longest beat)
 
@@ -109,7 +109,7 @@
 
 - [ ] All P0 / P1 features verified working end-to-end at < 20s wall clock
 - [ ] Anti-hallucination eval at 100%
-- [ ] Demo failure-mode tests from [SAFETY.md](SAFETY.md) all green
+- [ ] Demo failure-mode tests from [SAFETY.md](../design/SAFETY.md) all green
 - [ ] Browser tabs cleaned up; no notification banners; bookmarks bar hidden
 - [ ] Resolution set to 1920×1080 minimum
 - [ ] Microphone test (no echo, no fan noise)

@@ -2,13 +2,27 @@
 
 > Healthcare AI agents that reconcile pre-admit and discharge medication lists, deliver authoritative safety verdicts, and translate the result into 6th-grade-reading-level patient material.
 >
-> Built for the **Agents Assemble — The Healthcare AI Endgame** hackathon (Prompt Opinion / Darena Health, 2026).
+> Built for **Agents Assemble — The Healthcare AI Endgame** hackathon (Prompt Opinion / Darena Health, 2026).
+
+---
+
+## Submission deadline: 2026-05-11, 23:00 EDT
+
+**Status**: documentation complete, implementation not started. Begin with [docs/build/BUILD.md](docs/build/BUILD.md).
+
+| Phase | Status | What it gets you |
+|------|--------|------------------|
+| P0 | not started | Valid hackathon submission (3 tools + 1 agent + fixture + 90s video) |
+| P1 | not started | Strong submission (+ Patient Educator, live HAPI, 4-card report) |
+| P2 | not started | Marketplace-grade (+ Drug Safety Specialist, eval set, registry) |
+
+The P0/P1 line is the **submission floor**. See [docs/build/PHASING.md](docs/build/PHASING.md).
 
 ---
 
 ## TL;DR
 
-Patient leaves hospital → confused about which meds to keep, stop, or restart → an agent system pulls FHIR data, runs deterministic drug checks, and produces a clinician-defensible reconciliation report plus a plain-English daily plan.
+Patient leaves hospital → confused about which meds to keep, stop, or restart → an agent system pulls FHIR data, runs deterministic drug checks (RxNav / openFDA / MedlinePlus — never the LLM), and produces a clinician-defensible reconciliation report plus a plain-English daily plan.
 
 ```
 Patient asks: "Should I still take my Metformin?"
@@ -17,104 +31,99 @@ Patient asks: "Should I still take my Metformin?"
   ┌──────────────────────────────────────────────────┐
   │ Reconciliation Coordinator (A2A, Sonnet)         │
   │  ├─ medrec-superpower MCP server (9 tools)       │
-  │  ├─ Drug Safety Specialist (A2A, Sonnet)         │
-  │  └─ Patient Educator (A2A, Haiku)                │
+  │  ├─ Drug Safety Specialist (A2A, Sonnet)     P2  │
+  │  └─ Patient Educator (A2A, Haiku)            P1  │
   └──────────────────────────────────────────────────┘
         │
         ▼
-  Reconciliation report + safety verdict + daily plan + ask-your-doctor list
+  Report + safety verdict + daily plan + ask-your-doctor list
 ```
 
 ---
 
-## Document Map
+## Where to look
 
-Read in this order if you're new:
-
-| # | File | What it covers |
-|---|------|----------------|
-| 1 | [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) | Why this system exists; goals, non-goals, judging-criteria mapping |
-| 2 | [ARCHITECTURE.md](ARCHITECTURE.md) | High-level architecture, technology stack, deployment topology |
-| 3 | [AGENTS.md](AGENTS.md) | The three A2A agents — roles, prompts, authority boundaries |
-| 4 | [MCP_SERVER.md](MCP_SERVER.md) | The 9 MCP tools — signatures, backing data sources, errors |
-| 5 | [SCHEMAS.md](SCHEMAS.md) | Pydantic models that flow between components |
-| 6 | [SHARP_CONTEXT.md](SHARP_CONTEXT.md) | SHARP extension propagation rules |
-| 7 | [DATA_FLOW.md](DATA_FLOW.md) | End-to-end demo data flow (T0 → T7) |
-| 8 | [SYSTEM_FLOW.md](SYSTEM_FLOW.md) | Control/orchestration flow, agent handoff rules |
-| 9 | [SAFETY.md](SAFETY.md) | Safety rules R1-R5 and error-handling matrix |
-| 10 | [TESTING.md](TESTING.md) | Unit, integration, and eval strategy |
-| 11 | [PHASING.md](PHASING.md) | P0 (ship-tonight) / P1 / P2 with hard ship line |
-| 12 | [DEMO.md](DEMO.md) | 3-min video script, screenshot plan |
-| 13 | [RISKS.md](RISKS.md) | Open questions, failure modes, mitigation |
-| 14 | [REFERENCES.md](REFERENCES.md) | External standards, APIs, sandboxes, prior art |
-| 15 | [CLAUDE.md](CLAUDE.md) | Claude Code rules for this repo (read me before any AI-assisted work) |
+| You want to… | Start here |
+|---|---|
+| Build today, ship before deadline | [docs/build/BUILD.md](docs/build/BUILD.md) |
+| Understand the full system | [docs/INDEX.md](docs/INDEX.md) |
+| Look up an external API | [docs/reference/REFERENCES.md](docs/reference/REFERENCES.md) |
+| See open risks / unanswered questions | [docs/reference/RISKS.md](docs/reference/RISKS.md) |
+| Work with Claude Code in this repo | [CLAUDE.md](CLAUDE.md) |
 
 ---
 
-## Repository Layout (planned)
+## Repository layout
 
 ```
 FHIR-Agent/
-├── docs/                       # this directory (human-facing)
-│   └── *.md
-├── medrec_superpower/          # Python MCP server package
-│   ├── __init__.py
-│   ├── server.py               # mcp SDK entrypoint, HTTP+SSE transport
-│   ├── tools/                  # one file per MCP tool
-│   ├── fhir/                   # FHIR client, resource adapters
-│   ├── drug/                   # RxNav, openFDA, MedlinePlus clients
-│   ├── sharp/                  # SHARP context validation, decorators
-│   └── schemas.py              # Pydantic models
-├── agents/                     # Prompt Opinion A2A agent configs (YAML/JSON)
-│   ├── coordinator/
-│   ├── drug_safety_specialist/
-│   └── patient_educator/
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── eval/
-│       └── goldens/            # Synthea-generated scenarios
-├── pyproject.toml              # uv / ruff / mypy / pytest config
-└── README.md                   # this file (root) — points to docs/
+├── README.md                     ← you are here
+├── CLAUDE.md                     Claude Code rules for this repo
+├── docs/
+│   ├── INDEX.md                  Reading guide by audience
+│   ├── build/                    Execution
+│   │   ├── BUILD.md              P0 playbook (start here)
+│   │   ├── PHASING.md            P0 / P1 / P2 scope
+│   │   ├── TESTING.md            Unit, integration, eval strategy
+│   │   └── DEMO.md               3-min video script + recording guide
+│   ├── design/                   The system
+│   │   ├── SYSTEM_DESIGN.md      Why this exists, goals, judging criteria
+│   │   ├── ARCHITECTURE.md       Components, stack, deployment topology
+│   │   ├── AGENTS.md             Three A2A agents + authority boundaries
+│   │   ├── MCP_SERVER.md         The 9 MCP tools
+│   │   ├── SCHEMAS.md            Pydantic models (single source of truth)
+│   │   ├── SHARP_CONTEXT.md      Identity propagation rules
+│   │   ├── DATA_FLOW.md          End-to-end Metformin demo path (T0 → T7)
+│   │   ├── SYSTEM_FLOW.md        Control + agent decision rules
+│   │   └── SAFETY.md             Safety rules R1–R5 + error matrix
+│   └── reference/                External
+│       ├── REFERENCES.md         Standards, APIs, sandboxes, libs
+│       └── RISKS.md              Risk register + open questions
+└── medrec_superpower/            (to be created — see docs/build/BUILD.md)
+    ├── server.py                 MCP entrypoint, HTTP+SSE
+    ├── tools/                    One file per MCP tool
+    ├── fhir/                     FHIR client + adapters
+    ├── drug/                     RxNav, openFDA, MedlinePlus clients
+    ├── sharp/                    SHARP JWT validation + decorator + redaction
+    └── schemas.py                Pydantic models (mirrors docs/design/SCHEMAS.md)
 ```
 
 ---
 
-## Quick Start (planned)
+## Hackathon alignment
+
+| Requirement | Where to find it |
+|---|---|
+| MCP server (Track 1) | [docs/design/MCP_SERVER.md](docs/design/MCP_SERVER.md) |
+| A2A agent (Track 2) | [docs/design/AGENTS.md](docs/design/AGENTS.md) |
+| SHARP Extension Specs | [docs/design/SHARP_CONTEXT.md](docs/design/SHARP_CONTEXT.md) |
+| Marketplace publish step | [docs/build/BUILD.md](docs/build/BUILD.md) §Marketplace |
+| Demo video < 3 min | [docs/build/DEMO.md](docs/build/DEMO.md) |
+| FHIR R4B | [docs/design/MCP_SERVER.md](docs/design/MCP_SERVER.md), [docs/design/DATA_FLOW.md](docs/design/DATA_FLOW.md) |
+
+---
+
+## Non-negotiable rules
+
+These are restated from [CLAUDE.md](CLAUDE.md) and [docs/design/SAFETY.md](docs/design/SAFETY.md):
+
+1. **Drug data never comes from the LLM** — RxNav / openFDA / MedlinePlus only. Tool failure → say so, never substitute (R3).
+2. **`patient_id` from SHARP only**, never from LLM-controlled args. Cross-patient → HTTP 403 (R1).
+3. **No PHI in plaintext logs** — redaction middleware on every log line (R2).
+4. **`SafetyVerdict.status="hold"` → no daily plan** — mechanically enforced by Pydantic validator (R5).
+5. **Never `git commit` / `git push`** — that's the user's job.
+
+---
+
+## Quick start (planned — after BUILD.md is executed)
 
 ```bash
-# Clone, install, run MCP server locally
 uv sync
 uv run python -m medrec_superpower.server  # binds 0.0.0.0:8765, HTTP+SSE
+ngrok http 8765                            # expose for Prompt Opinion
 
-# Register on Prompt Opinion (manual step)
-# 1. Sign in: https://app.promptopinion.ai
-# 2. Add MCP server URL in Marketplace settings
-# 3. Import the three agent configs from agents/
-
-# Run tests
+# tests
 uv run pytest tests/unit -v
 uv run pytest tests/integration -v
 uv run python tests/eval/run_eval.py
 ```
-
----
-
-## Status
-
-- [ ] **P0** — MCP (3 tools) + Coordinator + fixture data + 90s demo video
-- [ ] **P1** — + Patient Educator + 4 more MCP tools + HAPI sandbox
-- [ ] **P2** — + Drug Safety Specialist as separate A2A + 2 more MCP tools + eval set
-
-See [PHASING.md](PHASING.md) for the hard ship line.
-
-## Hackathon Alignment
-
-| Requirement | Where |
-|-------------|-------|
-| MCP server (Track 1) | [MCP_SERVER.md](MCP_SERVER.md) |
-| A2A agent (Track 2) | [AGENTS.md](AGENTS.md) |
-| SHARP Extension Specs | [SHARP_CONTEXT.md](SHARP_CONTEXT.md) |
-| Published to Marketplace | covered in [DEMO.md](DEMO.md) checklist |
-| Demo video < 3min | [DEMO.md](DEMO.md) |
-| FHIR R4B | covered in [MCP_SERVER.md](MCP_SERVER.md) and [DATA_FLOW.md](DATA_FLOW.md) |

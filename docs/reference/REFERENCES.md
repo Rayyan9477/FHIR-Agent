@@ -150,4 +150,4 @@ The free RxNav drug-interaction API was deprecated in early 2024. For P0/P1, use
 
 ## Glossary cross-link
 
-See [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) §Glossary for term definitions (FHIR, MCP, A2A, SHARP, RxNav, openFDA, etc.).
+See [SYSTEM_DESIGN.md](../design/SYSTEM_DESIGN.md) §Glossary for term definitions (FHIR, MCP, A2A, SHARP, RxNav, openFDA, etc.).

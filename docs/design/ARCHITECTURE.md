@@ -164,4 +164,4 @@ The system is intentionally stateless at the MCP layer. To scale:
 - Agents: managed by Prompt Opinion
 - Per-source rate limits — the bottleneck is RxNav's free tier (~20 req/sec). For P0 demo it's fine; P2 would add a 24h cache layer.
 
-See [PHASING.md](PHASING.md) for what's in scope when.
+See [PHASING.md](../build/PHASING.md) for what's in scope when.

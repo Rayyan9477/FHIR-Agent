@@ -188,4 +188,4 @@ In the 3-minute demo video, **explicitly show**:
 2. The same context flowing into MCP calls (network log or trace)
 3. The same context flowing across A2A handoff (Coordinator → Specialist)
 
-Judges will look for this. It is the differentiator from "any LLM with tools" entries. See [DEMO.md](DEMO.md).
+Judges will look for this. It is the differentiator from "any LLM with tools" entries. See [DEMO.md](../build/DEMO.md).

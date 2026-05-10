@@ -12,11 +12,11 @@
 ### Never invent drug data
 - Drug interactions, dosing, and patient education content come from authoritative APIs (RxNav, openFDA, MedlinePlus) — never from the LLM.
 - If a tool fails to return data, the agent must say so explicitly. Never silently substitute LLM output for tool output.
-- This is the #1 safety rule. See [SAFETY.md](SAFETY.md) Rule R3.
+- This is the #1 safety rule. See [SAFETY.md](docs/design/SAFETY.md) Rule R3.
 
 ### Never accept `patient_id` as an LLM-controlled argument
 - Patient identity comes from the SHARP context only. Tools and agents read it from the context, never from a tool argument the LLM constructed.
-- Cross-patient access must return HTTP 403. See [SHARP_CONTEXT.md](SHARP_CONTEXT.md).
+- Cross-patient access must return HTTP 403. See [SHARP_CONTEXT.md](docs/design/SHARP_CONTEXT.md).
 
 ### Never log PHI in plaintext
 - All structured logs use the redaction middleware in `medrec_superpower/sharp/redact.py`.
@@ -94,5 +94,5 @@ Task: "Add get_renal_dosing_guidance tool"
 ## 6. When in doubt
 
 - Read the spec: `/home/rayyan9477/docs/superpowers/specs/2026-05-11-medrec-superpower-design.md`
-- Read [PHASING.md](PHASING.md) — if it's not in P0 and P0 isn't done, don't build it
+- Read [PHASING.md](docs/build/PHASING.md) — if it's not in P0 and P0 isn't done, don't build it
 - Ask the user before starting destructive operations
