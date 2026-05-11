@@ -1,0 +1,56 @@
+---
+# Reconciliation Coordinator — Prompt Opinion A2A agent config (P0)
+#
+# NOTE: The exact Prompt Opinion YAML schema is not publicly documented
+# (RISKS Q2). This file uses a reasonable shape consistent with public
+# A2A agent samples. Adjust at marketplace publish time once the
+# platform's required keys are confirmed.
+
+name: reconciliation-coordinator
+display_name: "Reconciliation Coordinator"
+description: >-
+  Post-discharge medication reconciliation. Reads pre-admit + discharge
+  meds, runs deterministic drug interaction checks via RxNav, and produces
+  a clinician-defensible reconciliation report. SHARP-bound identity.
+
+version: "0.1.0"
+capability: medrec.reconcile
+capability_tags:
+  - medrec.reconcile
+  - medrec.fhir_data
+
+model:
+  provider: anthropic
+  name: claude-sonnet-4-6
+  temperature: 0.2
+  max_tokens: 4096
+
+system_prompt_file: ./system_prompt.md
+
+# MCP server backing the tools.
+mcp_servers:
+  - name: medrec-superpower
+    url_env: MEDREC_MCP_URL  # set at marketplace listing time
+    tools:
+      - get_pre_admit_meds
+      - get_discharge_meds
+      - check_interaction
+
+# Output contract — the agent MUST produce JSON matching this schema for
+# any structured response. Free-text user-facing responses are accepted
+# when the user asks a conversational question.
+output_schema: ../schemas/reconciliation_report.json
+
+# Routing — the Coordinator is the entry point for any patient-side
+# reconciliation query.
+input_modes:
+  - chat
+  - workspace_launch
+
+# Authority boundaries (informational; enforced server-side at the MCP
+# layer via @requires_sharp and at the schema layer via Pydantic).
+authority:
+  - reads_fhir: true
+  - writes_fhir: false
+  - reads_phi: true     # via SHARP-bound tool calls
+  - mutates_state: false

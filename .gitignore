@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+build/
+dist/
+.eggs/
+.installed.cfg
+
+# Virtual envs
+.venv/
+venv/
+.uv/
+.python-version
+
+# Caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Secrets / runtime
+.env
+.env.*
+!.env.example
+.ngrok-url
+.ngrok2/
+secrets/
+*.pem
+!tests/fixtures/sharp/keypair_test*.pem
+!tests/fixtures/sharp/keypair_test*.pub.pem
+
+# Build artifacts
+*.log
+.DS_Store
+node_modules/
+.next/
+.vercel/

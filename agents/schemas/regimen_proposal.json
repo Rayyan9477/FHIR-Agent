@@ -1,0 +1,492 @@
+{
+  "$defs": {
+    "Allergy": {
+      "additionalProperties": false,
+      "description": "Patient allergy record.",
+      "properties": {
+        "reaction": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reaction"
+        },
+        "rxcui": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rxcui"
+        },
+        "severity": {
+          "anyOf": [
+            {
+              "enum": [
+                "mild",
+                "moderate",
+                "severe"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Severity"
+        },
+        "substance": {
+          "minLength": 1,
+          "title": "Substance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "substance"
+      ],
+      "title": "Allergy",
+      "type": "object"
+    },
+    "Condition": {
+      "additionalProperties": false,
+      "description": "Patient condition record.",
+      "properties": {
+        "clinical_status": {
+          "enum": [
+            "active",
+            "remission",
+            "resolved"
+          ],
+          "title": "Clinical Status",
+          "type": "string"
+        },
+        "code": {
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "display": {
+          "minLength": 1,
+          "title": "Display",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "display",
+        "clinical_status"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "MedChangeAction": {
+      "description": "What happened to a medication between pre-admit and discharge.",
+      "enum": [
+        "start",
+        "stop",
+        "hold",
+        "dose_change",
+        "route_change",
+        "no_change"
+      ],
+      "title": "MedChangeAction",
+      "type": "string"
+    },
+    "MedChangeEvent": {
+      "additionalProperties": false,
+      "description": "Atomic reconciliation finding for one drug.",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/MedChangeAction"
+        },
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "drug_name": {
+          "minLength": 1,
+          "title": "Drug Name",
+          "type": "string"
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Date"
+        },
+        "new_dose": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "New Dose"
+        },
+        "old_dose": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Old Dose"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "rxcui": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rxcui"
+        },
+        "source": {
+          "enum": [
+            "discharge_summary",
+            "med_request",
+            "med_statement"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "drug_name",
+        "action",
+        "source"
+      ],
+      "title": "MedChangeEvent",
+      "type": "object"
+    },
+    "MedRecord": {
+      "additionalProperties": false,
+      "description": "Single medication record, regardless of source resource.",
+      "properties": {
+        "display": {
+          "minLength": 1,
+          "title": "Display",
+          "type": "string"
+        },
+        "dose": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dose"
+        },
+        "effective_period": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "anyOf": [
+                    {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Period"
+        },
+        "frequency": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Frequency"
+        },
+        "route": {
+          "anyOf": [
+            {
+              "enum": [
+                "PO",
+                "IV",
+                "IM",
+                "SC",
+                "TOPICAL",
+                "OTHER"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Route"
+        },
+        "rxcui": {
+          "minLength": 1,
+          "title": "Rxcui",
+          "type": "string"
+        },
+        "source_resource_id": {
+          "minLength": 1,
+          "title": "Source Resource Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rxcui",
+        "display",
+        "source_resource_id"
+      ],
+      "title": "MedRecord",
+      "type": "object"
+    },
+    "PatientContext": {
+      "additionalProperties": false,
+      "description": "Patient state used for safety reasoning.\n\n``patient_id`` is SHARP-validated upstream \u2014 this model never receives\nan LLM-controlled value.",
+      "properties": {
+        "age": {
+          "maximum": 130,
+          "minimum": 0,
+          "title": "Age",
+          "type": "integer"
+        },
+        "allergies": {
+          "items": {
+            "$ref": "#/$defs/Allergy"
+          },
+          "title": "Allergies",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "egfr": {
+          "anyOf": [
+            {
+              "maximum": 200,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Egfr"
+        },
+        "inr": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inr"
+        },
+        "lft_alt": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lft Alt"
+        },
+        "lft_ast": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lft Ast"
+        },
+        "patient_id": {
+          "minLength": 1,
+          "title": "Patient Id",
+          "type": "string"
+        },
+        "pregnancy_status": {
+          "anyOf": [
+            {
+              "enum": [
+                "none",
+                "pregnant",
+                "lactating",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pregnancy Status"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sex": {
+          "enum": [
+            "M",
+            "F",
+            "O",
+            "U"
+          ],
+          "title": "Sex",
+          "type": "string"
+        }
+      },
+      "required": [
+        "patient_id",
+        "age",
+        "sex"
+      ],
+      "title": "PatientContext",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Coordinator-to-Specialist message: the proposed regimen + context.",
+  "properties": {
+    "changes": {
+      "items": {
+        "$ref": "#/$defs/MedChangeEvent"
+      },
+      "title": "Changes",
+      "type": "array"
+    },
+    "discharge": {
+      "items": {
+        "$ref": "#/$defs/MedRecord"
+      },
+      "title": "Discharge",
+      "type": "array"
+    },
+    "encounter_id": {
+      "minLength": 1,
+      "title": "Encounter Id",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "patient_context": {
+      "$ref": "#/$defs/PatientContext"
+    },
+    "patient_id": {
+      "minLength": 1,
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "pre_admit": {
+      "items": {
+        "$ref": "#/$defs/MedRecord"
+      },
+      "title": "Pre Admit",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "patient_id",
+    "encounter_id",
+    "pre_admit",
+    "discharge",
+    "changes",
+    "patient_context",
+    "generated_at"
+  ],
+  "title": "RegimenProposal",
+  "type": "object"
+}

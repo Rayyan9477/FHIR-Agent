@@ -1,0 +1,118 @@
+{
+  "$defs": {
+    "SafetyFlag": {
+      "additionalProperties": false,
+      "description": "One safety finding.",
+      "properties": {
+        "category": {
+          "enum": [
+            "interaction",
+            "renal",
+            "hepatic",
+            "allergy",
+            "pregnancy",
+            "duplicate_therapy"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "citation_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Citation Url",
+          "type": "string"
+        },
+        "drugs_involved": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Drugs Involved",
+          "type": "array"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "caution",
+            "warn",
+            "hold"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "severity",
+        "category",
+        "drugs_involved",
+        "message",
+        "citation_url"
+      ],
+      "title": "SafetyFlag",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Specialist-to-Coordinator: the binding verdict on a regimen.\n\n``status=\"hold\"`` is binding \u2014 see ``ReconciliationReport`` validator\nthat mechanically refuses a daily plan when held (R5).",
+  "properties": {
+    "citations": {
+      "items": {
+        "format": "uri",
+        "maxLength": 2083,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "flags": {
+      "items": {
+        "$ref": "#/$defs/SafetyFlag"
+      },
+      "title": "Flags",
+      "type": "array"
+    },
+    "required_clinician_review": {
+      "title": "Required Clinician Review",
+      "type": "boolean"
+    },
+    "reviewed_at": {
+      "format": "date-time",
+      "title": "Reviewed At",
+      "type": "string"
+    },
+    "reviewer_agent": {
+      "default": "drug_safety_specialist",
+      "title": "Reviewer Agent",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "clear",
+        "caution",
+        "hold"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "required_clinician_review",
+    "reviewed_at"
+  ],
+  "title": "SafetyVerdict",
+  "type": "object"
+}

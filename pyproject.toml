@@ -1,0 +1,177 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "medrec-superpower"
+version = "0.1.0"
+description = "Post-discharge medication reconciliation MCP server — deterministic drug safety + FHIR + SHARP-bound identity"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "Faisal B.", email = "faisalb@nobilityrcm.com" },
+]
+keywords = ["mcp", "fhir", "healthcare", "medication-reconciliation", "rxnav", "sharp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+
+dependencies = [
+    "mcp>=1.12.0",
+    "pydantic>=2.9.0",
+    "fastapi>=0.115.0",
+    "httpx>=0.27.0",
+    "tenacity>=9.0.0",
+    "pyjwt[crypto]>=2.9.0",
+    "structlog>=24.4.0",
+    "anyio>=4.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "respx>=0.21.1",
+    "ruff>=0.7.0",
+    "mypy>=1.13.0",
+    "pip-audit>=2.7.3",
+    "bandit>=1.7.10",
+    "types-requests",
+]
+
+[project.scripts]
+medrec-superpower = "medrec_superpower.__main__:main"
+
+[project.urls]
+Repository = "https://github.com/faisalb/FHIR-Agent"
+
+[tool.hatch.build.targets.wheel]
+packages = ["medrec_superpower"]
+
+# ---------------------------------------------------------------------------
+# ruff — lint + format
+# ---------------------------------------------------------------------------
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+extend-exclude = ["tests/fixtures", "docs"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # bugbear
+    "UP",   # pyupgrade
+    "N",    # pep8-naming
+    "SIM",  # simplify
+    "RET",  # return
+    "RUF",  # ruff-specific
+    "S",    # bandit subset
+    "C4",   # comprehensions
+    "PIE",  # pie
+    "PT",   # pytest-style
+    "TID",  # tidy-imports
+]
+ignore = [
+    "S101",   # asserts allowed in tests
+    "S105",   # hardcoded password false positives (we have test JWT fixtures)
+    "N818",   # exception names without "Error" suffix — ours match HTTP semantics
+    "RUF002", # ambiguous unicode in docstrings — clinical typography intentional
+    "RUF003", # ambiguous unicode in comments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "PT011"]
+"scripts/**" = ["S"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["medrec_superpower"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ---------------------------------------------------------------------------
+# mypy — strict typing
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unreachable = true
+disallow_any_explicit = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+no_implicit_reexport = true
+show_error_codes = true
+plugins = ["pydantic.mypy"]
+files = ["medrec_superpower"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_any_explicit = false
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = ["respx.*", "tenacity.*"]
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+# ---------------------------------------------------------------------------
+# pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=medrec_superpower",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "--cov-fail-under=85",
+]
+markers = [
+    "unit: fast, no I/O",
+    "integration: hits live process / network",
+    "slow: > 1s",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:mcp.*",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["medrec_superpower"]
+omit = [
+    "medrec_superpower/__main__.py",
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "@overload",
+    "pragma: no cover",
+]

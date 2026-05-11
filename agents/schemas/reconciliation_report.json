@@ -1,0 +1,494 @@
+{
+  "$defs": {
+    "DailyPlanEntry": {
+      "additionalProperties": false,
+      "description": "One row of the patient's daily plan.",
+      "properties": {
+        "days": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  "Mon",
+                  "Tue",
+                  "Wed",
+                  "Thu",
+                  "Fri",
+                  "Sat",
+                  "Sun"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "const": "all",
+              "type": "string"
+            }
+          ],
+          "title": "Days"
+        },
+        "dose": {
+          "minLength": 1,
+          "title": "Dose",
+          "type": "string"
+        },
+        "drug": {
+          "minLength": 1,
+          "title": "Drug",
+          "type": "string"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        },
+        "rxcui": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rxcui"
+        },
+        "time_of_day": {
+          "enum": [
+            "AM",
+            "MIDDAY",
+            "PM",
+            "QHS",
+            "PRN"
+          ],
+          "title": "Time Of Day",
+          "type": "string"
+        }
+      },
+      "required": [
+        "days",
+        "time_of_day",
+        "drug",
+        "dose"
+      ],
+      "title": "DailyPlanEntry",
+      "type": "object"
+    },
+    "MedChangeAction": {
+      "description": "What happened to a medication between pre-admit and discharge.",
+      "enum": [
+        "start",
+        "stop",
+        "hold",
+        "dose_change",
+        "route_change",
+        "no_change"
+      ],
+      "title": "MedChangeAction",
+      "type": "string"
+    },
+    "MedChangeEvent": {
+      "additionalProperties": false,
+      "description": "Atomic reconciliation finding for one drug.",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/MedChangeAction"
+        },
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "drug_name": {
+          "minLength": 1,
+          "title": "Drug Name",
+          "type": "string"
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Date"
+        },
+        "new_dose": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "New Dose"
+        },
+        "old_dose": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Old Dose"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "rxcui": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rxcui"
+        },
+        "source": {
+          "enum": [
+            "discharge_summary",
+            "med_request",
+            "med_statement"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "drug_name",
+        "action",
+        "source"
+      ],
+      "title": "MedChangeEvent",
+      "type": "object"
+    },
+    "NarrativeSection": {
+      "additionalProperties": false,
+      "description": "One drug's patient-facing explanation.\n\nCitations are mandatory \u2014 every patient-facing drug claim must trace to\na MedlinePlus or FDA-label source (R4).",
+      "properties": {
+        "action_label": {
+          "minLength": 1,
+          "title": "Action Label",
+          "type": "string"
+        },
+        "citations": {
+          "items": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Citations",
+          "type": "array"
+        },
+        "drug": {
+          "minLength": 1,
+          "title": "Drug",
+          "type": "string"
+        },
+        "rxcui": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rxcui"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "drug",
+        "action_label",
+        "text",
+        "citations"
+      ],
+      "title": "NarrativeSection",
+      "type": "object"
+    },
+    "PatientNarrative": {
+      "additionalProperties": false,
+      "description": "Educator-to-Coordinator: 6th-grade narrative with citations.",
+      "properties": {
+        "citations": {
+          "items": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Citations",
+          "type": "array"
+        },
+        "questions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Questions",
+          "type": "array"
+        },
+        "reading_level_grade": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reading Level Grade"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "sections": {
+          "items": {
+            "$ref": "#/$defs/NarrativeSection"
+          },
+          "title": "Sections",
+          "type": "array"
+        }
+      },
+      "title": "PatientNarrative",
+      "type": "object"
+    },
+    "SafetyFlag": {
+      "additionalProperties": false,
+      "description": "One safety finding.",
+      "properties": {
+        "category": {
+          "enum": [
+            "interaction",
+            "renal",
+            "hepatic",
+            "allergy",
+            "pregnancy",
+            "duplicate_therapy"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "citation_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Citation Url",
+          "type": "string"
+        },
+        "drugs_involved": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Drugs Involved",
+          "type": "array"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "caution",
+            "warn",
+            "hold"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "severity",
+        "category",
+        "drugs_involved",
+        "message",
+        "citation_url"
+      ],
+      "title": "SafetyFlag",
+      "type": "object"
+    },
+    "SafetyVerdict": {
+      "additionalProperties": false,
+      "description": "Specialist-to-Coordinator: the binding verdict on a regimen.\n\n``status=\"hold\"`` is binding \u2014 see ``ReconciliationReport`` validator\nthat mechanically refuses a daily plan when held (R5).",
+      "properties": {
+        "citations": {
+          "items": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Citations",
+          "type": "array"
+        },
+        "flags": {
+          "items": {
+            "$ref": "#/$defs/SafetyFlag"
+          },
+          "title": "Flags",
+          "type": "array"
+        },
+        "required_clinician_review": {
+          "title": "Required Clinician Review",
+          "type": "boolean"
+        },
+        "reviewed_at": {
+          "format": "date-time",
+          "title": "Reviewed At",
+          "type": "string"
+        },
+        "reviewer_agent": {
+          "default": "drug_safety_specialist",
+          "title": "Reviewer Agent",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "clear",
+            "caution",
+            "hold"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "required_clinician_review",
+        "reviewed_at"
+      ],
+      "title": "SafetyVerdict",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Coordinator's final output to the user.",
+  "properties": {
+    "changes": {
+      "items": {
+        "$ref": "#/$defs/MedChangeEvent"
+      },
+      "title": "Changes",
+      "type": "array"
+    },
+    "daily_plan": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/DailyPlanEntry"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Daily Plan"
+    },
+    "encounter_id": {
+      "minLength": 1,
+      "title": "Encounter Id",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "patient_id": {
+      "minLength": 1,
+      "title": "Patient Id",
+      "type": "string"
+    },
+    "patient_narrative": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PatientNarrative"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "questions_for_doctor": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Questions For Doctor",
+      "type": "array"
+    },
+    "safety": {
+      "$ref": "#/$defs/SafetyVerdict"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "patient_id",
+    "encounter_id",
+    "generated_at",
+    "changes",
+    "safety"
+  ],
+  "title": "ReconciliationReport",
+  "type": "object"
+}

@@ -1,0 +1,105 @@
+{
+  "$defs": {
+    "NarrativeSection": {
+      "additionalProperties": false,
+      "description": "One drug's patient-facing explanation.\n\nCitations are mandatory \u2014 every patient-facing drug claim must trace to\na MedlinePlus or FDA-label source (R4).",
+      "properties": {
+        "action_label": {
+          "minLength": 1,
+          "title": "Action Label",
+          "type": "string"
+        },
+        "citations": {
+          "items": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Citations",
+          "type": "array"
+        },
+        "drug": {
+          "minLength": 1,
+          "title": "Drug",
+          "type": "string"
+        },
+        "rxcui": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rxcui"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "drug",
+        "action_label",
+        "text",
+        "citations"
+      ],
+      "title": "NarrativeSection",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Educator-to-Coordinator: 6th-grade narrative with citations.",
+  "properties": {
+    "citations": {
+      "items": {
+        "format": "uri",
+        "maxLength": 2083,
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "questions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Questions",
+      "type": "array"
+    },
+    "reading_level_grade": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reading Level Grade"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sections": {
+      "items": {
+        "$ref": "#/$defs/NarrativeSection"
+      },
+      "title": "Sections",
+      "type": "array"
+    }
+  },
+  "title": "PatientNarrative",
+  "type": "object"
+}
