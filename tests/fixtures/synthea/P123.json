@@ -1,0 +1,93 @@
+{
+  "_meta": {
+    "scenario": "post-discharge medication reconciliation — Metformin 48h hold after CT contrast",
+    "synthea_origin": "hand-authored to match docs/design/DATA_FLOW.md §T2",
+    "phi_safety": "synthetic — patient name distinctly artificial (K16)"
+  },
+  "patient": {
+    "id": "Patient/P123",
+    "name": "Aaron Rodriguez Synthea-7",
+    "birth_date": "1962-03-22",
+    "age": 64,
+    "sex": "F"
+  },
+  "encounter": {
+    "id": "Encounter/E456",
+    "patient_id": "Patient/P123",
+    "start": "2026-05-09T08:00:00Z",
+    "end": "2026-05-11T11:00:00Z",
+    "type": "elective imaging — abdomen CT with IV contrast"
+  },
+  "allergies": [
+    {
+      "substance": "ACE inhibitors",
+      "rxcui": null,
+      "reaction": "dry cough",
+      "severity": "moderate"
+    }
+  ],
+  "conditions": [
+    {
+      "code": "E11.9",
+      "display": "Type 2 diabetes mellitus without complications",
+      "clinical_status": "active"
+    },
+    {
+      "code": "I10",
+      "display": "Essential (primary) hypertension",
+      "clinical_status": "active"
+    }
+  ],
+  "observations": {
+    "egfr_mlmin_1_73m2": 58.0,
+    "lft_ast": 22.0,
+    "lft_alt": 19.0,
+    "inr": 1.0
+  },
+  "pre_admit_medications": [
+    {
+      "rxcui": "860975",
+      "display": "Metformin 1000 MG Oral Tablet",
+      "dose": "1000 MG",
+      "route": "PO",
+      "frequency": "BID",
+      "source_resource_id": "MedicationStatement/MS-MET-001",
+      "effective_period": ["2024-01-15", null]
+    },
+    {
+      "rxcui": "314076",
+      "display": "Lisinopril 10 MG Oral Tablet",
+      "dose": "10 MG",
+      "route": "PO",
+      "frequency": "QD",
+      "source_resource_id": "MedicationStatement/MS-LIS-002",
+      "effective_period": ["2023-06-01", null]
+    }
+  ],
+  "discharge_medications": [
+    {
+      "rxcui": "200316",
+      "display": "Losartan 50 MG Oral Tablet",
+      "dose": "50 MG",
+      "route": "PO",
+      "frequency": "QD",
+      "source_resource_id": "MedicationRequest/MR-LOS-003",
+      "effective_period": ["2026-05-11", null]
+    },
+    {
+      "rxcui": "617310",
+      "display": "Atorvastatin 40 MG Oral Tablet",
+      "dose": "40 MG",
+      "route": "PO",
+      "frequency": "QHS",
+      "source_resource_id": "MedicationRequest/MR-ATR-004",
+      "effective_period": ["2026-05-11", null]
+    }
+  ],
+  "discharge_summary": {
+    "doc_ref_id": "DocumentReference/D789",
+    "encounter_id": "Encounter/E456",
+    "created": "2026-05-11T10:45:00Z",
+    "text": "DISCHARGE SUMMARY\n\nPatient: Aaron Rodriguez Synthea-7 (DOB 1962-03-22)\nEncounter: E456 (2026-05-09 to 2026-05-11)\nProcedure: CT abdomen/pelvis with IV iodinated contrast on 2026-05-09.\n\nMedication changes at discharge:\n  - HOLD Metformin 1000 mg BID for 48 hours following IV contrast administration. Restart 2026-05-12 morning AFTER kidney function recheck. Reduce restart dose if eGFR < 60 (current: 58).\n  - STOP Lisinopril 10 mg daily due to ACE-inhibitor-induced cough.\n  - START Losartan 50 mg daily (ARB substitute for ACE-I — same indication, no cough cross-reactivity expected).\n  - START Atorvastatin 40 mg at bedtime for ASCVD primary prevention given LDL elevated on admission labs.\n\nFollow up with PCP in 2 weeks. Recheck eGFR before restarting Metformin. Patient educated on signs of bleeding (NSAID avoidance) and warned about Losartan starting dose hypotension."
+  }
+}
