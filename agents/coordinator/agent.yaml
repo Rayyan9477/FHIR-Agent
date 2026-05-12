@@ -32,9 +32,13 @@ mcp_servers:
   - name: medrec-superpower
     url_env: MEDREC_MCP_URL  # set at marketplace listing time
     tools:
+      - get_patient_context
       - get_pre_admit_meds
       - get_discharge_meds
+      - parse_discharge_summary
+      - lookup_rxnorm
       - check_interaction
+      - get_drug_education_handout
 
 # Output contract — the agent MUST produce JSON matching this schema for
 # any structured response. Free-text user-facing responses are accepted

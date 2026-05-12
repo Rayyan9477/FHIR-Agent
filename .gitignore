@@ -43,7 +43,9 @@ Thumbs.db
 .ngrok-url
 .ngrok2/
 secrets/
+.secrets/
 *.pem
+*.jwt
 !tests/fixtures/sharp/keypair_test*.pem
 !tests/fixtures/sharp/keypair_test*.pub.pem
 

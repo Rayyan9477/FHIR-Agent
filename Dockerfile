@@ -20,15 +20,16 @@ WORKDIR /build
 # Copy only dependency manifests first for layer caching
 COPY pyproject.toml uv.lock* ./
 
-# Resolve and install runtime deps into a project venv
-RUN uv sync --frozen --no-dev --no-install-project 2>/dev/null || \
-    uv sync --no-dev --no-install-project
+# Resolve and install runtime deps into a project venv. ``--frozen`` enforces
+# that uv.lock is authoritative — fail loudly if the lockfile is stale rather
+# than silently resolving fresh versions that diverge from CI.
+RUN uv sync --frozen --no-dev --no-install-project
 
 # Copy source and install the project itself
 COPY medrec_superpower/ ./medrec_superpower/
 COPY tests/fixtures/ ./tests/fixtures/
 
-RUN uv sync --frozen --no-dev 2>/dev/null || uv sync --no-dev
+RUN uv sync --frozen --no-dev
 
 # ----------------------------------------------------------------------- runtime
 FROM python:${PYTHON_VERSION}-slim AS runtime

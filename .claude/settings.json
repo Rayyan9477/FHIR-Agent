@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv --version)",
+      "Bash(uv sync *)",
+      "Bash(uv run *)",
+      "PowerShell($env:SHARP_PUBLIC_KEY_PEM = \".secrets\\\\sharp_dev_pub.pem\"; $env:SHARP_ISSUER = \"promptopinion.ai\"; $env:SHARP_AUDIENCE = \"medrec-superpower\"; $env:MEDREC_HOST = \"127.0.0.1\"; $env:MEDREC_PORT = \"8765\"; $env:MEDREC_LOG_LEVEL = \"INFO\"; uv run python -m medrec_superpower)",
+      "PowerShell(Invoke-RestMethod http://127.0.0.1:8765/healthz)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 8765 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; Start-Sleep -Seconds 1; \"killed\")",
+      "WebFetch(domain:www.youtube.com)",
+      "WebFetch(domain:www.youtube-transcript.io)",
+      "WebFetch(domain:youtubetranscript.com)",
+      "Bash(where yt-dlp *)",
+      "Bash(where ffmpeg *)",
+      "mcp__claude_ai_Exa__web_fetch_exa",
+      "mcp__claude_ai_Exa__web_search_exa",
+      "PowerShell(Get-NetTCPConnection -LocalPort 8765 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; Start-Sleep -Seconds 1; \"killed old server\")",
+      "PowerShell(ngrok http 8765 --log=stdout --log-format=json)",
+      "Bash(uv export *)",
+      "Bash(grep -n '```mermaid' d:/Repo/FHIR-Agent/README.md d:/Repo/FHIR-Agent/docs/design/DIAGRAMS.md)",
+      "mcp__claude_ai_Mermaid_Chart_2__validate_and_render_mermaid_diagram",
+      "mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram",
+      "Bash(rm -f \"C:\\\\Users\\\\rayyan.a\\\\.claude\\\\projects\\\\d--Repo-FHIR-Agent\\\\a4584fff-bee5-4dbe-9450-567f05bf5f4f\\\\tool-results\\\\mcp-claude_ai_Mermaid_Chart\"*.txt 2>&1; echo \"cleaned\")"
+    ],
+    "additionalDirectories": [
+      "\\tmp",
+      "C:\\Users\\rayyan.a\\.claude\\projects\\d--Repo-FHIR-Agent\\a4584fff-bee5-4dbe-9450-567f05bf5f4f\\tool-results"
+    ]
+  }
+}

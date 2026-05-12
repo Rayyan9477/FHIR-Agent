@@ -29,12 +29,14 @@ from medrec_superpower.drug.schemas import (
     InteractionRecord,
     InteractionResult,
     InteractionSeverity,
+    RxNormMatch,
 )
 
 logger = structlog.get_logger(__name__)
 
 _RXNAV_BASE_URL = "https://rxnav.nlm.nih.gov/REST"
 _INTERACTION_PATH = "/interaction/list.json"
+_APPROX_TERM_PATH = "/approximateTerm.json"
 _DEFAULT_TIMEOUT_S = 5.0
 _DEFAULT_CONNECT_TIMEOUT_S = 2.0
 _MAX_ATTEMPTS = 3
@@ -85,6 +87,70 @@ class RxNavClient:
         if self._client is not None:
             await self._client.aclose()
             self._client = None
+
+    async def lookup_rxnorm(self, term: str, *, max_results: int = 5) -> list[RxNormMatch]:
+        """Look up RxCUIs for a free-text drug term via RxNav ``approximateTerm``.
+
+        Returns a ranked list of candidates (best first). Empty list on failure
+        — never raises across the public surface. The caller decides whether
+        to treat an empty result as "unknown drug" or retry.
+        """
+        if self._client is None:
+            raise RuntimeError("RxNavClient must be used as an async context manager")
+        cleaned = term.strip()
+        if not cleaned:
+            return []
+        params = {"term": cleaned, "maxEntries": str(max(1, min(50, max_results)))}
+        try:
+            response = await self._client.get(_APPROX_TERM_PATH, params=params)
+        except httpx.HTTPError as exc:
+            logger.warning(
+                "rxnav.lookup_rxnorm.transport_error",
+                term=cleaned,
+                error=str(exc),
+            )
+            return []
+        if response.status_code != 200:
+            logger.warning(
+                "rxnav.lookup_rxnorm.upstream_error",
+                term=cleaned,
+                status=response.status_code,
+            )
+            return []
+        try:
+            payload: object = response.json()
+        except json.JSONDecodeError:
+            return []
+        if not isinstance(payload, dict):
+            return []
+        group = payload.get("approximateGroup")
+        if not isinstance(group, dict):
+            return []
+        candidates = group.get("candidate")
+        out: list[RxNormMatch] = []
+        if isinstance(candidates, list):
+            for c in candidates:
+                if not isinstance(c, dict):
+                    continue
+                rxcui = c.get("rxcui")
+                if not isinstance(rxcui, str) or not rxcui:
+                    continue
+                display = c.get("name") if isinstance(c.get("name"), str) else cleaned
+                score_raw = c.get("score")
+                try:
+                    score = float(score_raw) if score_raw is not None else 0.0
+                except (TypeError, ValueError):
+                    score = 0.0
+                tty = c.get("rxcuiType") if isinstance(c.get("rxcuiType"), str) else None
+                out.append(
+                    RxNormMatch(
+                        rxcui=rxcui,
+                        display=display or cleaned,
+                        score=score,
+                        term_type=tty,
+                    )
+                )
+        return out
 
     async def check_interaction(self, rxcui_a: str, rxcui_b: str) -> InteractionResult:
         """Look up drug-drug interactions between two RxCUIs.

@@ -1,0 +1,521 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "timestamp": "2026-05-12T23:04:18.017830+00:00",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198",
+      "resource": {
+        "resourceType": "Patient",
+        "name": [
+          {
+            "text": "Aaron Rodriguez Synthea-7"
+          }
+        ],
+        "birthDate": "1962-03-22",
+        "gender": "female"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7",
+      "resource": {
+        "resourceType": "Encounter",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "period": {
+          "start": "2026-05-09T08:00:00Z",
+          "end": "2026-05-11T11:00:00Z"
+        },
+        "reasonCode": [
+          {
+            "text": "elective imaging \u2014 abdomen CT with IV contrast"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Encounter"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:bccaaf9d-0e9d-475a-a31f-aa3ceb187531",
+      "resource": {
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "E11.9",
+              "display": "Type 2 diabetes mellitus without complications"
+            }
+          ],
+          "text": "Type 2 diabetes mellitus without complications"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:1cc8145b-ffb7-44bb-9edf-002f4c011b21",
+      "resource": {
+        "resourceType": "Condition",
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "I10",
+              "display": "Essential (primary) hypertension"
+            }
+          ],
+          "text": "Essential (primary) hypertension"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:477bec63-160c-4319-8983-7f3443253d7f",
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "patient": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "text": "ACE inhibitors"
+        },
+        "reaction": [
+          {
+            "manifestation": [
+              {
+                "text": "dry cough"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "AllergyIntolerance"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:83d2a3b1-6c05-4741-b883-8898d25f44cc",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-3",
+              "display": "eGFR"
+            }
+          ],
+          "text": "eGFR"
+        },
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "encounter": {
+          "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+        },
+        "valueQuantity": {
+          "value": 58.0,
+          "unit": "mL/min/1.73m2",
+          "system": "http://unitsofmeasure.org",
+          "code": "mL/min/1.73m2"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f0abacc6-8663-41e2-90c8-5e2d4bb6bf33",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1920-8",
+              "display": "AST"
+            }
+          ],
+          "text": "AST"
+        },
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "encounter": {
+          "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+        },
+        "valueQuantity": {
+          "value": 22.0,
+          "unit": "U/L",
+          "system": "http://unitsofmeasure.org",
+          "code": "U/L"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6922f737-5461-4d7e-8362-3ab03f12bd90",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1742-6",
+              "display": "ALT"
+            }
+          ],
+          "text": "ALT"
+        },
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "encounter": {
+          "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+        },
+        "valueQuantity": {
+          "value": 19.0,
+          "unit": "U/L",
+          "system": "http://unitsofmeasure.org",
+          "code": "U/L"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cd161c3b-53e7-4310-bcc4-de21f8b7eaaa",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6301-6",
+              "display": "INR"
+            }
+          ],
+          "text": "INR"
+        },
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "encounter": {
+          "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+        },
+        "valueQuantity": {
+          "value": 1.0,
+          "unit": "ratio",
+          "system": "http://unitsofmeasure.org",
+          "code": "ratio"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:7aea4202-c696-429b-ad11-4611ef0cddb7",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "status": "stopped",
+        "intent": "order",
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "encounter": {
+          "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+        },
+        "authoredOn": "2026-05-09T08:00:00Z",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "860975",
+              "display": "Metformin 1000 MG Oral Tablet"
+            }
+          ],
+          "text": "Metformin 1000 MG Oral Tablet"
+        },
+        "dosageInstruction": [
+          {
+            "text": "1000 MG BID",
+            "route": {
+              "coding": [
+                {
+                  "code": "oral",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:6f4c1127-b8e7-4ee1-be77-25f0facc9e0e",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "status": "stopped",
+        "intent": "order",
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "encounter": {
+          "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+        },
+        "authoredOn": "2026-05-09T08:00:00Z",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "314076",
+              "display": "Lisinopril 10 MG Oral Tablet"
+            }
+          ],
+          "text": "Lisinopril 10 MG Oral Tablet"
+        },
+        "dosageInstruction": [
+          {
+            "text": "10 MG QD",
+            "route": {
+              "coding": [
+                {
+                  "code": "oral",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ef50533f-5b3e-4602-882b-8c6a732eea48",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "intent": "order",
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "encounter": {
+          "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+        },
+        "authoredOn": "2026-05-11T11:00:00Z",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "200316",
+              "display": "Losartan 50 MG Oral Tablet"
+            }
+          ],
+          "text": "Losartan 50 MG Oral Tablet"
+        },
+        "dosageInstruction": [
+          {
+            "text": "50 MG QD",
+            "route": {
+              "coding": [
+                {
+                  "code": "oral",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:60e3e049-e6ba-41b9-989b-a71efd77b4ce",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "status": "active",
+        "intent": "order",
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "encounter": {
+          "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+        },
+        "authoredOn": "2026-05-11T11:00:00Z",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "617310",
+              "display": "Atorvastatin 40 MG Oral Tablet"
+            }
+          ],
+          "text": "Atorvastatin 40 MG Oral Tablet"
+        },
+        "dosageInstruction": [
+          {
+            "text": "40 MG QHS",
+            "route": {
+              "coding": [
+                {
+                  "code": "oral",
+                  "display": "Oral"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationRequest"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cefab50c-3b74-4a60-92bf-d2be1e2e1473",
+      "resource": {
+        "resourceType": "DocumentReference",
+        "status": "current",
+        "subject": {
+          "reference": "urn:uuid:accf8aa4-d298-4903-901f-fd1b8d487198"
+        },
+        "context": {
+          "encounter": [
+            {
+              "reference": "urn:uuid:537cfdc1-92bc-4200-a494-37c00b0c80f7"
+            }
+          ]
+        },
+        "date": "2026-05-11T10:45:00Z",
+        "type": {
+          "text": "Discharge summary"
+        },
+        "content": [
+          {
+            "attachment": {
+              "contentType": "text/plain",
+              "data": "RElTQ0hBUkdFIFNVTU1BUlkKClBhdGllbnQ6IEFhcm9uIFJvZHJpZ3VleiBTeW50aGVhLTcgKERPQiAxOTYyLTAzLTIyKQpFbmNvdW50ZXI6IEU0NTYgKDIwMjYtMDUtMDkgdG8gMjAyNi0wNS0xMSkKUHJvY2VkdXJlOiBDVCBhYmRvbWVuL3BlbHZpcyB3aXRoIElWIGlvZGluYXRlZCBjb250cmFzdCBvbiAyMDI2LTA1LTA5LgoKTWVkaWNhdGlvbiBjaGFuZ2VzIGF0IGRpc2NoYXJnZToKICAtIEhPTEQgTWV0Zm9ybWluIDEwMDAgbWcgQklEIGZvciA0OCBob3VycyBmb2xsb3dpbmcgSVYgY29udHJhc3QgYWRtaW5pc3RyYXRpb24uIFJlc3RhcnQgMjAyNi0wNS0xMiBtb3JuaW5nIEFGVEVSIGtpZG5leSBmdW5jdGlvbiByZWNoZWNrLiBSZWR1Y2UgcmVzdGFydCBkb3NlIGlmIGVHRlIgPCA2MCAoY3VycmVudDogNTgpLgogIC0gU1RPUCBMaXNpbm9wcmlsIDEwIG1nIGRhaWx5IGR1ZSB0byBBQ0UtaW5oaWJpdG9yLWluZHVjZWQgY291Z2guCiAgLSBTVEFSVCBMb3NhcnRhbiA1MCBtZyBkYWlseSAoQVJCIHN1YnN0aXR1dGUgZm9yIEFDRS1JIOKAlCBzYW1lIGluZGljYXRpb24sIG5vIGNvdWdoIGNyb3NzLXJlYWN0aXZpdHkgZXhwZWN0ZWQpLgogIC0gU1RBUlQgQXRvcnZhc3RhdGluIDQwIG1nIGF0IGJlZHRpbWUgZm9yIEFTQ1ZEIHByaW1hcnkgcHJldmVudGlvbiBnaXZlbiBMREwgZWxldmF0ZWQgb24gYWRtaXNzaW9uIGxhYnMuCgpGb2xsb3cgdXAgd2l0aCBQQ1AgaW4gMiB3ZWVrcy4gUmVjaGVjayBlR0ZSIGJlZm9yZSByZXN0YXJ0aW5nIE1ldGZvcm1pbi4gUGF0aWVudCBlZHVjYXRlZCBvbiBzaWducyBvZiBibGVlZGluZyAoTlNBSUQgYXZvaWRhbmNlKSBhbmQgd2FybmVkIGFib3V0IExvc2FydGFuIHN0YXJ0aW5nIGRvc2UgaHlwb3RlbnNpb24u",
+              "title": "Discharge summary"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "DocumentReference"
+      }
+    }
+  ]
+}

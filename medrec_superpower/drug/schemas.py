@@ -11,6 +11,19 @@ from medrec_superpower.schemas import StrictModel
 InteractionSeverity = Literal["high", "moderate", "low", "unknown"]
 
 
+class RxNormMatch(StrictModel):
+    """A single RxNav ``approximateTerm`` candidate.
+
+    Returned by :meth:`RxNavClient.lookup_rxnorm` when resolving a free-text
+    drug name to one or more RxCUIs. The caller picks by score / term type.
+    """
+
+    rxcui: str = Field(min_length=1)
+    display: str = Field(min_length=1)
+    score: float = Field(ge=0.0)
+    term_type: str | None = None
+
+
 class InteractionRecord(StrictModel):
     """A single drug-drug interaction finding."""
 
@@ -34,4 +47,9 @@ class InteractionResult(StrictModel):
     error_message: str | None = None
 
 
-__all__ = ["InteractionRecord", "InteractionResult", "InteractionSeverity"]
+__all__ = [
+    "InteractionRecord",
+    "InteractionResult",
+    "InteractionSeverity",
+    "RxNormMatch",
+]

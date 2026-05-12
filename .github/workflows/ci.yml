@@ -44,6 +44,11 @@ jobs:
       - name: mypy strict
         run: uv run mypy medrec_superpower
 
+      - name: schema export drift check
+        # The Coordinator agent config references agents/schemas/*.json.
+        # Catch silent drift between Pydantic models and committed schemas.
+        run: uv run python scripts/export_schemas.py --check
+
       - name: pytest with coverage
         run: uv run pytest
 
@@ -72,8 +77,15 @@ jobs:
       - name: sync deps
         run: uv sync --extra dev
 
+      - name: export third-party requirements
+        # pip-audit cannot resolve our own unpublished package via PyPI; export
+        # the lock file with --no-emit-project so audit covers only deps. The
+        # exported file already lists the full resolved set, so --no-deps is
+        # required when paired with --disable-pip.
+        run: uv export --quiet --no-hashes --no-emit-project --format requirements-txt > requirements.audit.txt
+
       - name: pip-audit
-        run: uv run pip-audit --strict
+        run: uv run pip-audit --strict --disable-pip --no-deps --requirement requirements.audit.txt
 
       - name: bandit
         run: uv run bandit -q -r medrec_superpower

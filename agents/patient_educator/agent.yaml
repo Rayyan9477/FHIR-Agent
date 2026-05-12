@@ -1,0 +1,54 @@
+---
+# Patient Educator — Prompt Opinion A2A agent config (P1)
+#
+# This agent is built no-code inside Prompt Opinion. It consumes a
+# ReconciliationReport from the Coordinator (via A2A) and rewrites the
+# narrative at a 6th-grade reading level with MedlinePlus citations.
+#
+# The Coordinator triggers this agent when the user wants the answer in
+# plain language (any patient-facing chat) — the system prompt of the
+# Coordinator includes "consult the Patient Educator before final render".
+
+name: patient-educator
+display_name: "Patient Educator"
+description: >-
+  Translates a structured ReconciliationReport into 6th-grade-reading-level
+  patient material with MedlinePlus citations for every drug claim. Reading
+  level checked post-generation; agent regenerates once if Flesch-Kincaid > 7.
+
+version: "0.1.0"
+capability: patient_education.translate
+capability_tags:
+  - patient_education.translate
+  - patient_education.6th_grade
+  - patient_education.cited
+
+# Lighter / faster model — narrative-only workload, no FHIR or RxNav.
+model:
+  provider: anthropic
+  name: claude-haiku-4-5
+  temperature: 0.3
+  max_tokens: 2048
+
+system_prompt_file: ./system_prompt.md
+
+# Inputs: a ReconciliationReport JSON object (see agents/schemas).
+# Output: a PatientNarrative JSON object.
+input_schema: ../schemas/reconciliation_report.json
+output_schema: ../schemas/patient_narrative.json
+
+# MCP tools available — Educator only needs MedlinePlus URLs.
+mcp_servers:
+  - name: medrec-superpower
+    url_env: MEDREC_MCP_URL
+    tools:
+      - get_drug_education_handout
+
+input_modes:
+  - a2a
+
+authority:
+  - reads_fhir: false   # the Educator never queries FHIR directly
+  - writes_fhir: false
+  - reads_phi: false    # consumes only the structured report; no raw PHI
+  - mutates_state: false
