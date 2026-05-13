@@ -55,7 +55,36 @@ def main() -> int:
         default=Path("agents/schemas"),
         help="output directory (default: agents/schemas)",
     )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help=(
+            "Exit non-zero if any on-disk schema differs from what would be "
+            "generated. Use this in CI to catch drift between Pydantic models "
+            "and the JSON Schemas published to the Coordinator agent config."
+        ),
+    )
     args = parser.parse_args()
+
+    if args.check:
+        drift: list[str] = []
+        for name, model in SCHEMAS.items():
+            path = args.out / name
+            expected = json.dumps(model.model_json_schema(), indent=2, sort_keys=True) + "\n"
+            if not path.is_file():
+                drift.append(f"missing: {path}")
+                continue
+            actual = path.read_text()
+            if actual != expected:
+                drift.append(f"out-of-date: {path}")
+        if drift:
+            print("Schema drift detected — run `uv run python scripts/export_schemas.py`:")
+            for d in drift:
+                print(f"  - {d}")
+            return 1
+        print("All schemas up to date.")
+        return 0
+
     written = export(args.out)
     for p in written:
         print(f"wrote {p}")

@@ -7,5 +7,6 @@ from medrec_superpower.fhir.fixture_loader import (
     FixtureLoader,
     FixtureNotFoundError,
 )
+from medrec_superpower.fhir.po_client import PoFhirClient
 
-__all__ = ["FhirClient", "FixtureLoader", "FixtureNotFoundError"]
+__all__ = ["FhirClient", "FixtureLoader", "FixtureNotFoundError", "PoFhirClient"]

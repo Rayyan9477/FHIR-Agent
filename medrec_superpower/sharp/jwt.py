@@ -12,7 +12,7 @@ All validation failures map to :class:`SharpUnauthorized` (HTTP 401).
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Literal
 
 import jwt
@@ -20,6 +20,8 @@ from pydantic import Field
 
 from medrec_superpower.schemas import StrictModel
 from medrec_superpower.sharp.keys import KeyResolver
+
+_UTC = timezone.utc
 
 UserRole = Literal["patient", "clinician", "pharmacist"]
 
@@ -61,16 +63,19 @@ async def validate_sharp(
     token: str,
     *,
     key_resolver: KeyResolver,
-    audience: str = "medrec-superpower",
-    issuer: str = "promptopinion.ai",
+    audience: str | None = "medrec-superpower",
+    issuer: str | None = "promptopinion.ai",
 ) -> SharpContext:
     """Decode + validate a SHARP JWT and return a :class:`SharpContext`.
 
     :param token: Raw JWT string from the ``x-sharp-context`` header.
     :param key_resolver: Returns the verifying public key for a given ``kid``.
         Tests use :class:`StaticKeyResolver`; prod uses :class:`JWKSResolver`.
-    :param audience: Expected ``aud`` claim (V3).
-    :param issuer: Expected ``iss`` claim.
+    :param audience: Expected ``aud`` claim (V3). Pass ``None`` to skip the
+        audience check — used during the hackathon demo when Prompt Opinion
+        emits a token whose ``aud`` value is platform-internal.
+    :param issuer: Expected ``iss`` claim. Pass ``None`` to skip the issuer
+        check (same demo escape hatch).
     :raises SharpUnauthorized: any validation failure.
     """
     if not token or not isinstance(token, str):
@@ -87,6 +92,16 @@ async def validate_sharp(
     except KeyError as exc:
         raise SharpUnauthorized(f"unknown signing key (kid={kid!r})") from exc
 
+    # PyJWT's ``options`` parameter is typed as a TypedDict ``Options`` —
+    # building it incrementally (we may or may not set ``verify_aud``/
+    # ``verify_iss``) does not satisfy that shape under strict mypy, so
+    # collapse it to ``object`` and silence the single arg-type check.
+    options: dict[str, object] = {"require": list(_REQUIRED_CLAIMS)}
+    if audience is None:
+        options["verify_aud"] = False
+    if issuer is None:
+        options["verify_iss"] = False
+
     try:
         claims = jwt.decode(
             token,
@@ -95,7 +110,7 @@ async def validate_sharp(
             audience=audience,
             issuer=issuer,
             leeway=_CLOCK_SKEW_SECONDS,
-            options={"require": list(_REQUIRED_CLAIMS)},
+            options=options,  # type: ignore[arg-type]
         )
     except jwt.ExpiredSignatureError as exc:
         raise SharpUnauthorized("token expired") from exc
@@ -121,10 +136,6 @@ async def validate_sharp(
         audience=str(claims["aud"]),
     )
 
-
-from datetime import timezone as _tz  # noqa: E402  (placement after public surface)
-
-_UTC = _tz.utc
 
 __all__ = [
     "SharpContext",

@@ -15,7 +15,7 @@ from typing import Protocol, cast
 import structlog
 from pydantic import ValidationError
 
-from medrec_superpower.schemas import MedRecord
+from medrec_superpower.schemas import Allergy, Condition, MedRecord, PatientContext, Sex
 
 logger = structlog.get_logger(__name__)
 
@@ -25,7 +25,11 @@ class FixtureNotFoundError(LookupError):
 
 
 class FhirClient(Protocol):
-    """Structural type any FHIR-backed data source must satisfy."""
+    """Structural type any FHIR-backed data source must satisfy.
+
+    Implementations: :class:`FixtureLoader` (dev) and
+    :class:`medrec_superpower.fhir.PoFhirClient` (Prompt Opinion workspace).
+    """
 
     async def get_medication_statements(  # pragma: no cover - protocol
         self,
@@ -41,6 +45,24 @@ class FhirClient(Protocol):
         intent: str = "discharge",
     ) -> list[MedRecord]:
         """Return MedicationRequests for an encounter filtered by intent."""
+        ...
+
+    async def get_patient_context(  # pragma: no cover - protocol
+        self,
+        patient_id: str,
+    ) -> PatientContext:
+        """Return demographics + conditions + allergies + key labs.
+
+        Conforms to :class:`PatientContext`. Missing fields are ``None``;
+        the caller decides whether to mark a tool result ``partial``.
+        """
+        ...
+
+    async def get_discharge_summary_text(  # pragma: no cover - protocol
+        self,
+        encounter_id: str,
+    ) -> str | None:
+        """Return the discharge summary narrative or ``None`` if absent."""
         ...
 
 
@@ -60,8 +82,16 @@ class FixtureLoader:
             raise FileNotFoundError(f"fixture dir not found: {self._dir}")
 
     def _load(self, patient_id: str) -> dict[str, object]:
-        """Read ``<patient_id-stub>.json`` and parse as JSON."""
+        """Read ``<patient_id-stub>.json`` and parse as JSON.
+
+        Defense-in-depth: the patient_id always traces back to a SHARP-signed
+        JWT issued by a trusted ``iss``, so the value is already constrained.
+        We still refuse any stub that would escape the fixture dir (slashes,
+        leading dots) — cheap insurance against a future signer compromise.
+        """
         stub = patient_id.split("/", 1)[-1]  # "Patient/P123" -> "P123"
+        if not stub or "/" in stub or "\\" in stub or stub.startswith("."):
+            raise FixtureNotFoundError(f"unsafe patient_id stub: {stub!r}")
         path = self._dir / f"{stub}.json"
         if not path.is_file():
             raise FixtureNotFoundError(f"no fixture for patient_id={patient_id!r}")
@@ -126,6 +156,71 @@ class FixtureLoader:
         if not isinstance(raw_list, list):
             return []
         return _parse_med_records(raw_list)
+
+    async def get_patient_context(self, patient_id: str) -> PatientContext:
+        """Return demographics + conditions + allergies + labs from the fixture."""
+        try:
+            payload = self._load(patient_id)
+        except FixtureNotFoundError:
+            # Honest empty context — caller decides whether to mark partial.
+            return PatientContext(patient_id=patient_id, age=0, sex="U")
+        patient_raw = payload.get("patient", {})
+        patient = patient_raw if isinstance(patient_raw, dict) else {}
+        obs_raw = payload.get("observations", {})
+        obs = obs_raw if isinstance(obs_raw, dict) else {}
+        allergies_raw = payload.get("allergies", []) or []
+        conditions_raw = payload.get("conditions", []) or []
+
+        allergies: list[Allergy] = []
+        if isinstance(allergies_raw, list):
+            for a in allergies_raw:
+                if not isinstance(a, dict):
+                    continue
+                try:
+                    allergies.append(Allergy.model_validate(a))
+                except ValidationError as exc:
+                    logger.warning("fixture.allergy.invalid", error=str(exc))
+
+        conditions: list[Condition] = []
+        if isinstance(conditions_raw, list):
+            for c in conditions_raw:
+                if not isinstance(c, dict):
+                    continue
+                try:
+                    conditions.append(Condition.model_validate(c))
+                except ValidationError as exc:
+                    logger.warning("fixture.condition.invalid", error=str(exc))
+
+        age = patient.get("age", 0) if isinstance(patient.get("age"), int) else 0
+        sex_raw = patient.get("sex", "U")
+        sex: Sex = sex_raw if sex_raw in ("M", "F", "O", "U") else "U"
+
+        def _num(value: object) -> float | None:
+            return float(value) if isinstance(value, (int, float)) else None
+
+        return PatientContext(
+            patient_id=patient_id,
+            age=age,
+            sex=sex,
+            egfr=_num(obs.get("egfr_mlmin_1_73m2")),
+            lft_ast=_num(obs.get("lft_ast")),
+            lft_alt=_num(obs.get("lft_alt")),
+            inr=_num(obs.get("inr")),
+            allergies=allergies,
+            conditions=conditions,
+        )
+
+    async def get_discharge_summary_text(self, encounter_id: str) -> str | None:
+        """Return the discharge-summary narrative text or ``None``."""
+        try:
+            payload = self._load_by_encounter(encounter_id)
+        except FixtureNotFoundError:
+            return None
+        summary = payload.get("discharge_summary")
+        if not isinstance(summary, dict):
+            return None
+        text = summary.get("text")
+        return text if isinstance(text, str) and text.strip() else None
 
 
 def _parse_med_records(raw: list[object]) -> list[MedRecord]:
