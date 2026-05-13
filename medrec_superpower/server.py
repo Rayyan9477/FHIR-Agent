@@ -237,7 +237,7 @@ def build_mcp(sharp_resolver: KeyResolver) -> FastMCP[AppContext]:
         """
         req: RequestSharpContext = current_request_context()
         if req.has_po_context:
-            assert req.patient_id is not None  # noqa: S101 - narrowed by has_po_context  # nosec B101
+            assert req.patient_id is not None  # nosec B101  # narrowed by has_po_context
             now = datetime.now(_UTC)
             # PO doesn't supply encounter — use a sentinel; PoFhirClient
             # interprets it as "patient-scoped search".
@@ -252,7 +252,7 @@ def build_mcp(sharp_resolver: KeyResolver) -> FastMCP[AppContext]:
                 audience=_SERVER_NAME,
             )
         if req.has_dev_token:
-            assert req.sharp_token is not None  # noqa: S101 - narrowed by has_dev_token  # nosec B101
+            assert req.sharp_token is not None  # nosec B101  # narrowed by has_dev_token
             app = ctx.request_context.lifespan_context
             try:
                 return await validate_sharp(
@@ -289,9 +289,9 @@ def build_mcp(sharp_resolver: KeyResolver) -> FastMCP[AppContext]:
         """
         req = current_request_context()
         if req.has_po_context:
-            assert req.fhir_server_url is not None  # noqa: S101  # nosec B101
-            assert req.fhir_access_token is not None  # noqa: S101  # nosec B101
-            assert req.patient_id is not None  # noqa: S101  # nosec B101
+            assert req.fhir_server_url is not None  # nosec B101
+            assert req.fhir_access_token is not None  # nosec B101
+            assert req.patient_id is not None  # nosec B101
             async with PoFhirClient(
                 fhir_server_url=req.fhir_server_url,
                 access_token=req.fhir_access_token,

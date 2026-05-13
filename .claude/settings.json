@@ -20,7 +20,8 @@
       "Bash(grep -n '```mermaid' d:/Repo/FHIR-Agent/README.md d:/Repo/FHIR-Agent/docs/design/DIAGRAMS.md)",
       "mcp__claude_ai_Mermaid_Chart_2__validate_and_render_mermaid_diagram",
       "mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram",
-      "Bash(rm -f \"C:\\\\Users\\\\rayyan.a\\\\.claude\\\\projects\\\\d--Repo-FHIR-Agent\\\\a4584fff-bee5-4dbe-9450-567f05bf5f4f\\\\tool-results\\\\mcp-claude_ai_Mermaid_Chart\"*.txt 2>&1; echo \"cleaned\")"
+      "Bash(rm -f \"C:\\\\Users\\\\rayyan.a\\\\.claude\\\\projects\\\\d--Repo-FHIR-Agent\\\\a4584fff-bee5-4dbe-9450-567f05bf5f4f\\\\tool-results\\\\mcp-claude_ai_Mermaid_Chart\"*.txt 2>&1; echo \"cleaned\")",
+      "Bash(echo \"=== pip-audit \\(CI replica\\) ===\" *)"
     ],
     "additionalDirectories": [
       "\\tmp",

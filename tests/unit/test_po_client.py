@@ -390,9 +390,7 @@ class TestGetPatientContext:
                 {
                     "resource": {
                         "resourceType": "Observation",
-                        "code": {
-                            "coding": [{"system": "http://loinc.org", "code": "33914-3"}]
-                        },
+                        "code": {"coding": [{"system": "http://loinc.org", "code": "33914-3"}]},
                         "valueQuantity": {"value": 45.0},
                         "effectiveDateTime": "2024-01-01T00:00:00Z",
                     }
@@ -400,9 +398,7 @@ class TestGetPatientContext:
                 {
                     "resource": {
                         "resourceType": "Observation",
-                        "code": {
-                            "coding": [{"system": "http://loinc.org", "code": "33914-3"}]
-                        },
+                        "code": {"coding": [{"system": "http://loinc.org", "code": "33914-3"}]},
                         "valueQuantity": {"value": 58.0},
                         "effectiveDateTime": "2026-05-09T00:00:00Z",
                     }
@@ -459,9 +455,7 @@ class TestGetDischargeSummaryText:
     @respx.mock
     async def test_decodes_base64_attachment(self) -> None:
         respx.get(f"{_BASE}/DocumentReference").mock(
-            return_value=httpx.Response(
-                200, json=_doc_ref_bundle("HOLD Metformin for 48 hours.")
-            )
+            return_value=httpx.Response(200, json=_doc_ref_bundle("HOLD Metformin for 48 hours."))
         )
         async with _client() as c:
             text = await c.get_discharge_summary_text("Encounter/PROMPT_OPINION_DEFAULT")
@@ -500,9 +494,7 @@ class TestGetDischargeSummaryText:
                 }
             ],
         }
-        respx.get(f"{_BASE}/DocumentReference").mock(
-            return_value=httpx.Response(200, json=bundle)
-        )
+        respx.get(f"{_BASE}/DocumentReference").mock(return_value=httpx.Response(200, json=bundle))
         async with _client() as c:
             text = await c.get_discharge_summary_text("Encounter/anything")
         assert text is None
@@ -520,9 +512,7 @@ class TestGetDischargeSummaryText:
                         "resourceType": "DocumentReference",
                         "type": {"text": "Discharge summary"},
                         "date": "2024-01-01T00:00:00Z",
-                        "content": [
-                            {"attachment": {"contentType": "text/plain", "data": old}}
-                        ],
+                        "content": [{"attachment": {"contentType": "text/plain", "data": old}}],
                     }
                 },
                 {
@@ -530,16 +520,12 @@ class TestGetDischargeSummaryText:
                         "resourceType": "DocumentReference",
                         "type": {"text": "Discharge summary"},
                         "date": "2026-05-11T00:00:00Z",
-                        "content": [
-                            {"attachment": {"contentType": "text/plain", "data": new}}
-                        ],
+                        "content": [{"attachment": {"contentType": "text/plain", "data": new}}],
                     }
                 },
             ],
         }
-        respx.get(f"{_BASE}/DocumentReference").mock(
-            return_value=httpx.Response(200, json=bundle)
-        )
+        respx.get(f"{_BASE}/DocumentReference").mock(return_value=httpx.Response(200, json=bundle))
         async with _client() as c:
             text = await c.get_discharge_summary_text("Encounter/anything")
         assert text == "NEW summary"
@@ -567,9 +553,7 @@ class TestGetDischargeSummaryText:
                 }
             ],
         }
-        respx.get(f"{_BASE}/DocumentReference").mock(
-            return_value=httpx.Response(200, json=bundle)
-        )
+        respx.get(f"{_BASE}/DocumentReference").mock(return_value=httpx.Response(200, json=bundle))
         async with _client() as c:
             text = await c.get_discharge_summary_text("Encounter/anything")
         assert text is None
@@ -596,9 +580,7 @@ class TestGetDischargeSummaryText:
                 }
             ],
         }
-        respx.get(f"{_BASE}/DocumentReference").mock(
-            return_value=httpx.Response(200, json=bundle)
-        )
+        respx.get(f"{_BASE}/DocumentReference").mock(return_value=httpx.Response(200, json=bundle))
         async with _client() as c:
             text = await c.get_discharge_summary_text("Encounter/anything")
         assert text is None
@@ -632,9 +614,7 @@ class TestGetDischargeSummaryText:
                 }
             ],
         }
-        respx.get(f"{_BASE}/DocumentReference").mock(
-            return_value=httpx.Response(200, json=bundle)
-        )
+        respx.get(f"{_BASE}/DocumentReference").mock(return_value=httpx.Response(200, json=bundle))
         async with _client() as c:
             text = await c.get_discharge_summary_text("Encounter/anything")
         assert text == "LOINC-matched"
